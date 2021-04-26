@@ -39,12 +39,14 @@ Database 	g_hDb;
 /**
 *?    Includes  
 **/
+#include "dwp/Cvars.sp"
 #include "dwp/UTIL.sp"
 #include "dwp/Database.sp"
 
 public void OnPluginStart()
 {
 	InitDb();
+	InitConVars();
 }
 
 public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
@@ -56,9 +58,9 @@ public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 		{
 			price = g_wWeapons[i].price;
 
-			// ! RebalancePrice(weapon, price);
+			ChangePrice(weapon, price);
 			IsFound = true;
-			break;
+			return Plugin_Handled;
 		}
 	}
 
@@ -67,8 +69,6 @@ public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 		AddWeaponToDb(weapon, price);
 		return Plugin_Continue;
 	}
-
-	// IncreasePrice(weaponm, price); // # для дальнейших покупок (нужна логика на проверку повышать или нет)
-
-	return Plugin_Handled;
+	
+	return Plugin_Continue;
 }

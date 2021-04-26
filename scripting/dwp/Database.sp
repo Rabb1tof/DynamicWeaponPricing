@@ -1,11 +1,12 @@
 #define sql_initMainTable "CREATE TABLE `price_list` ( \
 	`weapon` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci', \
-	`price` INT(11) NULL DEFAULT NULL \
+	`price` INT(11) NULL DEFAULT NULL, \
+    `default_price` INT(11) NULL DEFAULT NULL \
 ) \
 COLLATE='utf8mb4_unicode_ci' \
 ENGINE=InnoDB;"
-
 #define sql_getWeapons "SELECT `weapon`, `price` FROM `price_list`;"
+#define sql_addWeapon "INSERT INTO `price_list` (`weapon`, `price`, `default_price`) VALUES ('%s', %d, %d);"
 
 void InitDb()
 {
@@ -30,6 +31,9 @@ void InitDb()
             char query[256];
 
             g_hDb.Format(query, sizeof(query), sql_initMainTable);
+            #if DEBUG
+            LogError(query);
+            #endif
             g_hDb.Query(SQL_InitMainTable, query, _, DBPrio_High);
     } 
     else
@@ -45,6 +49,9 @@ void SQL_InitMainTable(Database db, DBResultSet results, const char[] error, any
 
     char query[256];
     g_hDb.Format(query, sizeof(query), sql_getWeapons);
+    #if DEBUG
+    LogError(query);
+    #endif
     g_hDb.Query(SQL_GetWeapons, query);
 }
 
@@ -68,7 +75,21 @@ void SQL_GetWeapons(Database db, DBResultSet results, const char[] error, any da
     }
 }
 
+// ? add weapon to database (tables default_price and price are equal)
 void AddWeaponToDb(const char[] weapon, int price)
 {
-    
+    char query[256];
+    g_hDb.Format(query, sizeof(query), sql_addWeapon, weapon, price, price);
+    #if DEBUG
+    LogError(query);
+    #endif
+    g_hDb.Query(SQL_AddWeapon, query);
+}
+
+void SQL_AddWeapon(Database db, DBResultSet results, const char[] error, any data)
+{
+    if(!results || error[0])
+    {
+        SetFailState("[DWP] Error while add weapon (%s)", error);
+    }
 }
