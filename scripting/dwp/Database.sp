@@ -10,6 +10,8 @@ ENGINE=InnoDB;"
 #define sql_addWeapon "INSERT INTO `price_list` (`weapon`, `price`, `default_price`) VALUES ('%s', %d, %d) \
 ON DUPLICATE KEY UPDATE `price` = %d;"
 #define sql_changePrice "UPDATE `price_list` SET `price` = %d WHERE `weapon` = '%s';"
+#define sql_resetAllPrice "UPDATE `price_list` SET `price` = `default_price`;"
+#define sql_resetPrice "UPDATE `price_list` SET `price` = `default_price` WHERE `weapon` = '%s';"
 
 void InitDb()
 {
@@ -121,5 +123,37 @@ void SQL_ChangePrice(Database db, DBResultSet results, const char[] error, any d
     if(!results || error[0])
     {
         SetFailState("[DWP] Error while change price of weapon (%s)", error);
+    }
+}
+
+void ResetAllPrice()
+{
+    char query[256];
+
+    g_hDb.Format(query, sizeof(query), sql_resetAllPrice);
+    g_hDb.Query(SQL_ResetAllPrice, query);
+}
+
+void SQL_ResetAllPrice(Database db, DBResultSet results, const char[] error, any data)
+{
+    if(!results || error[0])
+    {
+        SetFailState("[DWP] Error while reset price of weapons (%s)", error);
+    }
+}
+
+void ResetPriceOfWeapon(char[] weapon)
+{
+    char query[256];
+
+    g_hDb.Format(query, sizeof(query), sql_resetPrice, weapon);
+    g_hDb.Query(SQL_ResetPrice, query);
+}
+
+void SQL_ResetPrice(Database db, DBResultSet results, const char[] error, any data)
+{
+    if(!results || error[0])
+    {
+        SetFailState("[DWP] Error while reset price of weapon (%s)", error);
     }
 }

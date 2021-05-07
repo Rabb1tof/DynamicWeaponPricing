@@ -1,0 +1,20 @@
+"Phrases"
+{
+    "MainTitle"
+    {
+        "ru"            "Динамическое изменение цен на оружие"
+        "en"            "Dynamic Weapon Pricing"
+    }
+
+    "ChooseWeaponToReset"
+    {
+        "ru"            "Выберите оружие, у которого сбросить цену!"
+        "en"            "Choose a weapon that has a reset price!"
+    }
+
+    "ResetAll"
+    {
+        "ru"            "Сбросить все цены"
+        "en"            "Reset all prices"
+    }
+}

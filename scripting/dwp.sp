@@ -42,13 +42,16 @@ Database 	g_hDb;
 #include "dwp/Cvars.sp"
 #include "dwp/UTIL.sp"
 #include "dwp/Database.sp"
+#include "dwp/menus.sp"
 
 public void OnPluginStart()
 {
 	InitDb();
 	InitConVars();
 
+	LoadTranslations("dwp.phrases");
 	HookEvent("item_purchase", CSRules_Item_Purchase);
+	RegAdminCmd("sm_dwp", Cmd_MainMenu, ADMFLAG_GENERIC);
 }
 
 Action CSRules_Item_Purchase(Event event, const char[] name, bool dbc)
@@ -84,4 +87,12 @@ public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 	}
 
 	return Plugin_Continue;
+}
+
+Action Cmd_MainMenu(int client, int args)
+{
+    if(IsValidClient(client))
+    {
+        ShowMainMenu(client);
+    }
 }

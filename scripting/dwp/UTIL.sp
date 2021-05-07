@@ -34,3 +34,18 @@ stock int ReductionPrice(int oldPrice)
 {
     return ((100 - g_iPercentOfPriceReduction) * oldPrice / 100);
 }
+
+stock void String_ToUpper(const char[] input, char[] output, int size)
+{
+	size--;
+
+	int x = 0;
+	while (input[x] != '\0' && x < size) {
+
+		output[x] = CharToUpper(input[x]);
+
+		x++;
+	}
+
+	output[x] = '\0';
+}
