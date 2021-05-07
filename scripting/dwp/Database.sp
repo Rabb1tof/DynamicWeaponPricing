@@ -1,12 +1,15 @@
-#define sql_initMainTable "CREATE TABLE `price_list` ( \
+#define sql_initMainTable "CREATE TABLE IF NOT EXISTS `price_list` ( \
 	`weapon` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci', \
 	`price` INT(11) NULL DEFAULT NULL, \
-    `default_price` INT(11) NULL DEFAULT NULL \
+	`default_price` INT(11) NULL DEFAULT NULL, \
+	UNIQUE INDEX `weapon` (`weapon`) USING BTREE \
 ) \
 COLLATE='utf8mb4_unicode_ci' \
 ENGINE=InnoDB;"
 #define sql_getWeapons "SELECT `weapon`, `price` FROM `price_list`;"
-#define sql_addWeapon "INSERT INTO `price_list` (`weapon`, `price`, `default_price`) VALUES ('%s', %d, %d);"
+#define sql_addWeapon "INSERT INTO `price_list` (`weapon`, `price`, `default_price`) VALUES ('%s', %d, %d) \
+ON DUPLICATE KEY UPDATE `price` = %d;"
+#define sql_changePrice "UPDATE `price_list` SET `price` = %d WHERE `weapon` = '%s';"
 
 void InitDb()
 {
@@ -47,6 +50,11 @@ void SQL_InitMainTable(Database db, DBResultSet results, const char[] error, any
         SetFailState("[DWP] Error while creating table (%s)", error);
     }
 
+    GetWeapons();
+}
+
+void GetWeapons()
+{
     char query[256];
     g_hDb.Format(query, sizeof(query), sql_getWeapons);
     #if DEBUG
@@ -72,6 +80,7 @@ void SQL_GetWeapons(Database db, DBResultSet results, const char[] error, any da
         results.FetchString(0, weapon, sizeof(weapon));
         g_wWeapons[count].name = weapon;
         g_wWeapons[count].price = results.FetchInt(1);
+        count++;
     }
 }
 
@@ -79,7 +88,7 @@ void SQL_GetWeapons(Database db, DBResultSet results, const char[] error, any da
 void AddWeaponToDb(const char[] weapon, int price)
 {
     char query[256];
-    g_hDb.Format(query, sizeof(query), sql_addWeapon, weapon, price, price);
+    g_hDb.Format(query, sizeof(query), sql_addWeapon, weapon, price, price, price);
     #if DEBUG
     LogError(query);
     #endif
@@ -91,5 +100,26 @@ void SQL_AddWeapon(Database db, DBResultSet results, const char[] error, any dat
     if(!results || error[0])
     {
         SetFailState("[DWP] Error while add weapon (%s)", error);
+    }
+
+    GetWeapons();
+}
+
+void ChangePriceDB(int price, char[] weapon)
+{
+    char query[256];
+
+    g_hDb.Format(query, sizeof(query), sql_changePrice, price, weapon);
+    #if DEBUG
+    LogError(query);
+    #endif
+    g_hDb.Query(SQL_ChangePrice, query);
+}
+
+void SQL_ChangePrice(Database db, DBResultSet results, const char[] error, any data)
+{
+    if(!results || error[0])
+    {
+        SetFailState("[DWP] Error while change price of weapon (%s)", error);
     }
 }

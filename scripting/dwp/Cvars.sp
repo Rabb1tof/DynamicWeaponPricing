@@ -16,6 +16,8 @@ void InitConVars()
     g_cPercentOfPriceIncrease = CreateConVar("sm_dwp_percent_of_price_increase", "10", "How much will the price rise compared to the price of the stock?", _, true, 1.0);
     g_cPercentOfPriceIncrease.AddChangeHook(OnPriceIncrease);
     g_iPercentOfPriceIncrease = g_cPercentOfPriceIncrease.IntValue;
+
+    AutoExecConfig(true, "core", "dwp");
 }
 
 public void OnConfigsExecuted()

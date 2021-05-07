@@ -47,18 +47,31 @@ public void OnPluginStart()
 {
 	InitDb();
 	InitConVars();
+
+	HookEvent("item_purchase", CSRules_Item_Purchase);
+}
+
+Action CSRules_Item_Purchase(Event event, const char[] name, bool dbc)
+{
+	char weapon[64];
+	event.GetString("weapon", weapon, sizeof(weapon));
+	PrintToServer("%s", weapon[7]);
+	ChangePrice(weapon[7]);
 }
 
 public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 {
+	//int newPrice;
 	bool IsFound = false;
 	for(int i = 0; i < MAX_WEAPONS; ++i)
 	{
 		if(!strcmp(g_wWeapons[i].name, weapon))
 		{
 			price = g_wWeapons[i].price;
+			if(price > GetEntProp(client, Prop_Send, "m_iAccount"))
+				return Plugin_Continue;
 
-			ChangePrice(weapon, price);
+			//ChangePrice(weapon, newPrice);
 			IsFound = true;
 			return Plugin_Handled;
 		}
@@ -69,6 +82,6 @@ public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 		AddWeaponToDb(weapon, price);
 		return Plugin_Continue;
 	}
-	
+
 	return Plugin_Continue;
 }
