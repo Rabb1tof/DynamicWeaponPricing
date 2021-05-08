@@ -14,7 +14,7 @@ public Plugin myinfo =
 	author = "Rabb1t (Discord: Rabb1t#4578)",
 	name = "[Dynamic Weapon Pricing] Core",
 	version = VERS_PLUGIN,
-	description = "The plugin allows you to download a server of the dynamic cost of weapons, depending on the frequency of purchase.",
+	description = "The plugin allows you to change the cost of weapons dynamically (depending on the frequency of purchase).",
 	url = "https://discord.gg/gpK9k8f https://t.me/rabb1tof"
 	
 }
@@ -54,6 +54,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_dwp", Cmd_MainMenu, ADMFLAG_GENERIC);
 }
 
+// ? Event started when player buyed weapon
 Action CSRules_Item_Purchase(Event event, const char[] name, bool dbc)
 {
 	char weapon[64];
@@ -62,6 +63,7 @@ Action CSRules_Item_Purchase(Event event, const char[] name, bool dbc)
 	ChangePrice(weapon[7]);
 }
 
+//? Forward to get price of weapon
 public Action CS_OnGetWeaponPrice(int client, const char[] weapon, int& price)
 {
 	//int newPrice;
