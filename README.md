@@ -5,5 +5,5 @@ The plugin allows you to change the cost of weapons **dynamically** *(depending 
 ConVars:
 ConVar | Description
 ------------ | ----------------
-`sm_dwp_percent_of_price_reduction` |  percent of price to reduction
-`sm_dwp_percent_of_price_increase` | percent of price to increase
+`sm_dwp_percent_of_price_reduction` |  How much will the price decrease from the stock price?
+`sm_dwp_percent_of_price_increase` | How much will the price rise compared to the price of the stock?
