@@ -9,4 +9,4 @@ ConVar | Description
 `sm_dwp_percent_of_price_increase` | How much will the price rise compared to the price of the stock?
 
 
-<div align="right">Author: [Rabb1t] (https://t.me/rabb1tof)</div>
+<div align="right">Author: [**[Rabb1t]**](https://t.me/rabb1tof) </div>
